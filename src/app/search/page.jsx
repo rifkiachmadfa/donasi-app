@@ -1,7 +1,7 @@
 import React from "react";
 
 function page() {
-  return <div>ini search page</div>;
+  return <div className="min-h-screen">ini search page</div>;
 }
 
 export default page;
