@@ -13,24 +13,34 @@ function Navbar() {
   const router = useRouter();
 
   useEffect(() => {
-    setArrow(path != "/");
+    setArrow(path !== "/");
   }, [path]);
 
   return (
-    <div className="flex justify-center h-14 items-center shadow-lg rounded-md gap-4">
+    <div className="flex justify-center h-14 items-center shadow-lg rounded-md gap-4 px-4">
       <div className="w-16 flex justify-center items-center">
         {arrow ? (
-          <ArrowLeft size="18" onClick={router.back} />
+          <ArrowLeft
+            size="18"
+            onClick={router.back}
+            className="cursor-pointer"
+          />
         ) : (
           <Image src="/sf-logo.png" height={100} width={100} alt="logo" />
         )}
       </div>
-      <div className="w-[24rem]">
-        <Link href="/search">
-          <div className="absolute right-[500px] top-[18px] h-10">
-            <Search size="18" />
-          </div>
-          <Input className="outline-none" placeholder="Cari Program" />
+
+      {/* Wrapper untuk Search Input */}
+      <div className="relative flex items-center w-[24rem]">
+        <Link href="/search" className="w-full">
+          <Input
+            className="pr-10 outline-none w-full"
+            placeholder="Cari Program"
+          />
+          <Search
+            size="18"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+          />
         </Link>
       </div>
     </div>
