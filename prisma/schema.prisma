@@ -20,7 +20,7 @@ model User {
   email     String   @unique
   password  String
   profile   Profile?
-  post Post[]
+  // post Post[]
 }
 
 model Profile {
@@ -34,9 +34,10 @@ model Profile {
 }
 
 model Post {
-  id        String   @id @default(cuid())
+  id        Int   @id @default(autoincrement())
   title     String
-  content   String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
+  content   String
+  published Boolean? @default(false)
+  // author    User     @relation(fields: [authorId], references: [id])
+  // authorId  String
 }
