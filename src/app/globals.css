@@ -5,7 +5,11 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
-
+.ProseMirror {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -1,4 +1,4 @@
-export async function CreatePost(values) {
+export async function createPost(values, imageUrl) {
   const response = await fetch("/api/campaign", {
     method: "POST",
     headers: {
@@ -7,6 +7,13 @@ export async function CreatePost(values) {
     body: JSON.stringify({
       title: values.title,
       content: values.content,
+      imageThumb: imageUrl,
     }),
   });
+
+  if (!response.ok) {
+    throw new Error(`API Error: ${response.statusText}`);
+  }
+
+  return response.json();
 }

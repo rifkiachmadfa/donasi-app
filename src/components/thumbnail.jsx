@@ -14,18 +14,20 @@ function Thumbnail() {
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSMgm5nB3-V6AGBltaaVH2P_J4cwOtLVmbJ6-8RkhiX6_RlQmIxhdKL0zN_YRUAEIVHjd4&usqp=CAU",
   ];
   return (
-    <div className="h-72">
-      <Carousel className="h-72">
-        <CarouselContent className="h-72">
+    <div className="aspect-video relative">
+      <Carousel className="aspect-video">
+        <CarouselContent className="aspect-video">
           {src.map((src) => (
             <CarouselItem key={src}>
-              <Image
-                src={src}
-                width={720}
-                height={100}
-                className="object-cover"
-                alt="thumbnail alt"
-              />
+              <div className="w-full h-full relative aspect-video">
+                <Image
+                  src={src}
+                  width={720}
+                  height={100}
+                  className="object-cover aspect-video"
+                  alt="thumbnail alt"
+                />
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>

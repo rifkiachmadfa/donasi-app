@@ -2,21 +2,25 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CreatePost } from "@/app/actions/createPost";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import ThumbnailUpload from "./thumbnailUpload";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { redirect } from "next/navigation";
+import { uploadThumbnail } from "@/app/services/uploadService";
+import { createPost } from "@/app/services/postService";
+import Tiptap from "./text-editor/tiptap";
+
 const formSchema = z.object({
   title: z
     .string()
@@ -26,8 +30,9 @@ const formSchema = z.object({
     .max(50, {
       message: "judul terlalu panjang",
     }),
-  content: z.string().min(10, {
-    message: "content harus lebih dari 10 karakter",
+  content: z.object({
+    type: z.literal("doc"),
+    content: z.array(z.any()),
   }),
 });
 
@@ -36,75 +41,88 @@ const CreateCampaign = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      content: "",
+      content: { type: "doc", content: [] },
     },
   });
   const { toast } = useToast();
+  const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function onSubmit(values) {
-    setIsLoading(true);
+  const handleFileChange = (file) => {
+    setFile(file); // Simpan file yang dipilih di state parent
+  };
+  const onSubmit = async (values) => {
     try {
-      await CreatePost(values);
-      toast({
-        title: "success",
-        description: "campaign berhasil ditambahkan",
-      });
+      if (!file) throw new Error("Silakan pilih file terlebih dahulu");
+
+      setIsLoading(true);
+
+      const imageUrl = await uploadThumbnail(file);
+      await createPost(values, imageUrl);
+
+      toast({ title: "Success", description: "Campaign berhasil dibuat!" });
+      redirect("/");
     } catch (error) {
-      console.log(error);
+      toast({ title: "Error", description: error.message });
     } finally {
       setIsLoading(false);
-
-      form.reset();
-      redirect("/");
     }
-  }
-
+  };
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Judul Campaign</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Program Makan Siang Gratis..."
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Ini adalah Judul dari Campaign
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="content"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Content</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Rp 10.000 untuk semua anak indonesia...."
-                    {...field}
-                  />
-                </FormControl>
-                <FormDescription>Isi dengan deskripsi konten</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Submitting..." : "submit"}
-          </Button>
-        </form>
-      </Form>
+      <div className="p-4 h-full min-h-screen flex flex-col ">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <ThumbnailUpload
+              onChange={(fileName) => handleFileChange(fileName)}
+            />
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Judul Campaign</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Program Makan Siang Gratis..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex-grow">
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Content</FormLabel>
+                    <FormControl>
+                      <Tiptap
+                        contentForm={field.value || {}}
+                        onChangeForm={field.onChange}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button disabled={isLoading} variant="outline">
+                cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? "Submitting..." : "submit"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
     </>
   );
 };

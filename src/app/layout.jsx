@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         <div className="bg-white h-full w-full">
           {" "}
           <Navbar />
-          {children}
+          <div className="mb-20">{children}</div>
           <NavMenu />
         </div>
         <Toaster />

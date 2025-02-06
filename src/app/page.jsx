@@ -1,5 +1,6 @@
 import Thumbnail from "@/components/thumbnail";
 import CategoryHome from "@/components/categoryHome";
+
 import CarouselUrgent from "@/components/carouselUrgent";
 export default async function Home() {
   return (
