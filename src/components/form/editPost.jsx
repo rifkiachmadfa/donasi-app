@@ -17,9 +17,10 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { uploadThumbnail } from "@/services/uploadService";
-import { createPost } from "@/services/postService";
+import { uploadThumbnail, updateThumbnail } from "@/services/uploadService";
+import { updatePost } from "@/actions/updateCampaignAchtion";
 import Tiptap from "./text-editor/tiptap";
+// import { updatePost } from "@/services/editService";
 
 const formSchema = z.object({
   title: z
@@ -36,13 +37,15 @@ const formSchema = z.object({
   }),
 });
 
-const CreateCampaign = () => {
+const EditCampaign = (campaign) => {
+  console.log(campaign);
   const router = useRouter();
+  const content = JSON.parse(campaign.campaign.content);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      content: { type: "doc", content: [] },
+      title: campaign.campaign.title,
+      content: content,
     },
   });
   const { toast } = useToast();
@@ -54,16 +57,17 @@ const CreateCampaign = () => {
   };
   const onSubmit = async (values) => {
     try {
-      if (!file) throw new Error("Silakan pilih file terlebih dahulu");
-
+      //   let imageUrl = null;
       setIsLoading(true);
 
-      const imageUrl = await uploadThumbnail(file);
-      const url = imageUrl.data.publicUrl;
-      console.log(url);
-      await createPost(values, url);
+      let imageUrl = await updateThumbnail(file);
+      if (!imageUrl) {
+        imageUrl = campaign.campaign.imageThumb;
+      }
+      const id = campaign.campaign.id;
+      await updatePost(id, values, imageUrl);
 
-      toast({ title: "Success", description: "Campaign berhasil dibuat!" });
+      toast({ title: "Success", description: "Campaign berhasil diedit!" });
       // router.push("/campaign");
     } catch (error) {
       toast({ title: "Error", description: error.message });
@@ -79,6 +83,7 @@ const CreateCampaign = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <ThumbnailUpload
               onChange={(fileName) => handleFileChange(fileName)}
+              previewUrls={campaign.campaign.imageThumb}
             />
             <FormField
               control={form.control}
@@ -106,7 +111,7 @@ const CreateCampaign = () => {
                     <FormLabel>Content</FormLabel>
                     <FormControl>
                       <Tiptap
-                        contentForm={field.value || {}}
+                        contentForm={field.value || content}
                         onChangeForm={field.onChange}
                       />
                     </FormControl>
@@ -131,4 +136,4 @@ const CreateCampaign = () => {
   );
 };
 
-export default CreateCampaign;
+export default EditCampaign;

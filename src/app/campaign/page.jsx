@@ -1,40 +1,13 @@
-import { db } from "@/lib/db";
+import { notFound } from "next/navigation";
+import { renderContent } from "@/utils/renderContent";
+import { getAllCampaign } from "@/lib/repo/campaign";
 
 export default async function campaignPage() {
-  const data = await db.post.findUnique({
-    where: {
-      id: 7,
-    },
-  });
-  console.log(data);
+  const data = await getAllCampaign();
 
-  // Helper function to render content based on type
-  const renderContent = (content) => {
-    return content.map((node, index) => {
-      switch (node.type) {
-        case "paragraph":
-          return (
-            <p className="text-xs" key={index}>
-              {node.content
-                ? node.content.map((text, idx) => text.text).join("")
-                : ""}
-            </p>
-          );
-        case "heading":
-          const HeadingTag = `h${node.attrs.level}`;
-
-          return (
-            <HeadingTag key={index}>
-              {node.content
-                ? node.content.map((text, idx) => text.text).join("")
-                : ""}
-            </HeadingTag>
-          );
-        default:
-          return null;
-      }
-    });
-  };
+  if (!data) {
+    return notFound();
+  }
 
   return (
     <>
@@ -48,7 +21,6 @@ export default async function campaignPage() {
             </li>
           ))}
         </ul>
-        <h2>Content Preview</h2>
       </div>
     </>
   );

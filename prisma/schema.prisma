@@ -34,13 +34,14 @@ model Profile {
 }
 
 model Post {
-  id        Int   @id @default(autoincrement())
+  id        String   @default(uuid())
   title     String
-  content   Json
+  content   String
   published Boolean? @default(false)
   imageThumb  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  slug      String @id @unique 
   // author    User     @relation(fields: [authorId], references: [id])
   // authorId  String
 }

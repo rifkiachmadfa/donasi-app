@@ -3,8 +3,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 
-const ThumbnailUpload = ({ onChange }) => {
-  const [previewUrl, setPreviewUrl] = useState(null);
+const ThumbnailUpload = ({ onChange, previewUrls }) => {
+  const [previewUrl, setPreviewUrl] = useState(previewUrls);
   const [file, setFile] = useState(null); // Simpan file asli di state lokal
 
   const handleFileChange = (e) => {
