@@ -18,20 +18,20 @@ function Navbar() {
 
   return (
     <div className="flex justify-center h-14 items-center shadow-lg rounded-md gap-4 px-4">
-      <div className="w-16 flex justify-center items-center">
+      <div className="w-full flex ">
         {arrow ? (
           <ArrowLeft
-            size="18"
+            size="20"
             onClick={router.back}
-            className="cursor-pointer"
+            className="cursor-pointer content-end"
           />
         ) : (
-          <Image src="/sf-logo.png" height={100} width={100} alt="logo" />
+          <Image src="/sf-logo.png" height={80} width={80} alt="logo" />
         )}
       </div>
 
       {/* Wrapper untuk Search Input */}
-      <div className="relative flex items-center w-[24rem]">
+      <div className="relative flex items-center w-[70rem]">
         <Link href="/search" className="w-full">
           <Input
             className="pr-10 outline-none w-full"

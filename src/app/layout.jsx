@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased  min-h-screen bg-gray-200`}
       >
         <div className="flex justify-center ">
-          <div className="bg-white h-full w-full max-w-lg shadow-2xl">
+          <div className="bg-white h-full w-full max-w-sm shadow-2xl">
             {" "}
             <Navbar />
             <div className="mb-20">{children}</div>
