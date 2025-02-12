@@ -10,6 +10,11 @@ body {
   border: none !important;
   box-shadow: none !important;
 }
+p:empty::after {
+  content: "\A";
+  white-space: pre;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

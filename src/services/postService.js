@@ -11,6 +11,7 @@ export async function createPost(values, imageUrl) {
     body: JSON.stringify({
       title: values.title,
       content: values.content,
+      url: values.url,
       imageThumb: imageUrl,
       slug: generate,
     }),

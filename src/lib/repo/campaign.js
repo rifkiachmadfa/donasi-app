@@ -5,10 +5,11 @@ export const getAllCampaign = async () => {
   return allCampaign;
 };
 
-export const getDetailCampaign = async (slug) => {
+export const getDetailCampaign = async (url) => {
+  console.log(url);
   const detailCampaign = await db.post.findUnique({
     where: {
-      slug: slug,
+      url: url,
     },
   });
   return detailCampaign;

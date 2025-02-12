@@ -16,7 +16,7 @@ import {
   Heading3,
   Strikethrough,
 } from "lucide-react";
-
+import HardBreak from "@tiptap/extension-hard-break";
 const MenuBar = ({ editor }) => {
   if (!editor) {
     return null;
@@ -99,12 +99,15 @@ export default function TextEditor({ onChangeForm, contentForm }) {
           return [`h${level}`, { class: classMap[level] }, 0];
         },
       }),
+      HardBreak.configure({
+        keepMarks: true, // Menjaga format teks (bold, italic, dll.)
+      }),
     ],
     content: contentForm || { type: "doc", content: [] },
     onUpdate: ({ editor }) => {
       if (editor && onChangeForm) {
-        const jsonContent = editor.getJSON() || { type: "doc", content: [] };
-        onChangeForm(jsonContent);
+        const html = editor.getHTML();
+        onChangeForm(html);
       }
     },
 
@@ -113,9 +116,11 @@ export default function TextEditor({ onChangeForm, contentForm }) {
 
     // Handling keydown for Enter key
     onKeyDown: (e) => {
-      if (e.key === "Enter") {
-        editor.chain().focus().insertContent("\n").run();
+      if (e.key === "Enter" && !event.shiftKey) {
+        editor.chain().focus().setHardBreak().run();
+        return true;
       }
+      return false;
     },
     immediatelyRender: false,
   });

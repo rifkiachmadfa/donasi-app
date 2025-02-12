@@ -11,6 +11,6 @@ export const formSchema = z.object({
     }),
   content: z.object({
     type: z.literal("doc"),
-    content: z.array(z.any()),
+    content: z.string().min(1, { message: "konten tidak boleh kosong" }),
   }),
 });

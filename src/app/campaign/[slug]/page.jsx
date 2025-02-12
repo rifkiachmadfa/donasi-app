@@ -7,12 +7,11 @@ import { notFound } from "next/navigation";
 const detailPage = async ({ params }) => {
   const slug = (await params).slug;
   const post = await getDetailCampaign(slug);
-  console.log("post", post.content);
-  const content = JSON.parse(post.content);
   if (!post) {
     notFound();
   }
-
+  const content = post.content;
+  console.log(post.content);
   return (
     <>
       <div>
@@ -26,7 +25,10 @@ const detailPage = async ({ params }) => {
           />
         </div>
         <h2 className="text-2xl">{post.title}</h2>
-        <div>{renderContent(content)}</div>
+        <div
+          dangerouslySetInnerHTML={{ __html: content }}
+          className="whitespace-pre-line"
+        />
       </div>
     </>
   );

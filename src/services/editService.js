@@ -1,29 +1,26 @@
 import { db } from "@/lib/db";
 
-export async function updatePost(id, values, imageUrl) {
-  if (!id || !values || !values.title || !values.content) {
+export async function updatePost(url, values, imageUrl, link) {
+  if (!url || !values || !values.title || !values.content) {
     console.error("❌ Data tidak valid untuk update:", {
-      id,
+      url,
       values,
       imageUrl,
     });
     throw new Error("Invalid data: Missing required fields");
   }
+  console.log("values url:", link);
 
-  console.log("✅ Data dikirim ke service:", {
-    id,
-    title: values.title,
-    content: values.content,
-    imageThumb: imageUrl,
-  });
-
-  const response = await db.post.update({
-    where: { id },
-    data: {
+  const response = await fetch(`/api/campaign/${link}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       title: values.title,
       content: values.content,
       imageThumb: imageUrl,
-    },
+    }),
   });
 
   if (!response.ok) {

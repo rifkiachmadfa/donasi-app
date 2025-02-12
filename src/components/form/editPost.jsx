@@ -18,9 +18,8 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { uploadThumbnail, updateThumbnail } from "@/services/uploadService";
-import { updatePost } from "@/actions/updateCampaignAchtion";
+import { updatePost } from "@/services/editService";
 import Tiptap from "./text-editor/tiptap";
-// import { updatePost } from "@/services/editService";
 
 const formSchema = z.object({
   title: z
@@ -31,16 +30,13 @@ const formSchema = z.object({
     .max(50, {
       message: "judul terlalu panjang",
     }),
-  content: z.object({
-    type: z.literal("doc"),
-    content: z.array(z.any()),
-  }),
+  content: z.string(),
 });
 
 const EditCampaign = (campaign) => {
   console.log(campaign);
   const router = useRouter();
-  const content = JSON.parse(campaign.campaign.content);
+  const content = campaign.campaign.content;
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,15 +53,19 @@ const EditCampaign = (campaign) => {
   };
   const onSubmit = async (values) => {
     try {
-      //   let imageUrl = null;
       setIsLoading(true);
-
-      let imageUrl = await updateThumbnail(file);
-      if (!imageUrl) {
+      let imageUrl;
+      if (!file) {
         imageUrl = campaign.campaign.imageThumb;
+        console.log("gambar tidak berubah tidak di eksekusi update thubnail");
+      } else {
+        imageUrl = await updateThumbnail(file);
+        console.log("update thumbnail ke supabase");
       }
-      const id = campaign.campaign.id;
-      await updatePost(id, values, imageUrl);
+      const link = campaign.campaign.url;
+
+      let url = imageUrl;
+      await updatePost(url, values, imageUrl, link);
 
       toast({ title: "Success", description: "Campaign berhasil diedit!" });
       // router.push("/campaign");

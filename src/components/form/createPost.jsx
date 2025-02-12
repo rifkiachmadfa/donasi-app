@@ -30,10 +30,10 @@ const formSchema = z.object({
     .max(50, {
       message: "judul terlalu panjang",
     }),
-  content: z.object({
-    type: z.literal("doc"),
-    content: z.array(z.any()),
+  url: z.string().regex(/^[a-z]+$/, {
+    message: "URL hanya boleh berisi huruf dan angka",
   }),
+  content: z.string().min(1, { message: "konten tidak boleh kosong" }),
 });
 
 const CreateCampaign = () => {
@@ -42,7 +42,8 @@ const CreateCampaign = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      content: { type: "doc", content: [] },
+      url: "",
+      content: "",
     },
   });
   const { toast } = useToast();
@@ -59,15 +60,16 @@ const CreateCampaign = () => {
       setIsLoading(true);
 
       const imageUrl = await uploadThumbnail(file);
+
       const url = imageUrl.data.publicUrl;
-      console.log(url);
+
       await createPost(values, url);
 
       toast({ title: "Success", description: "Campaign berhasil dibuat!" });
       // router.push("/campaign");
     } catch (error) {
       toast({ title: "Error", description: error.message });
-      console.error(error);
+      console.error(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -96,6 +98,23 @@ const CreateCampaign = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Buat Url</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="namaprogram"
+                      {...field}
+                      value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="flex-grow">
               <FormField
@@ -106,7 +125,7 @@ const CreateCampaign = () => {
                     <FormLabel>Content</FormLabel>
                     <FormControl>
                       <Tiptap
-                        contentForm={field.value || {}}
+                        contentForm={field.value || ""}
                         onChangeForm={field.onChange}
                       />
                     </FormControl>
