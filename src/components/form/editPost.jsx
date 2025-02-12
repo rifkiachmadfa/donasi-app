@@ -18,7 +18,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { uploadThumbnail, updateThumbnail } from "@/services/uploadService";
-import { updatePost } from "@/services/editService";
+import { editCampaignAction } from "@/app/actions/Campaignaction";
 import Tiptap from "./text-editor/tiptap";
 
 const formSchema = z.object({
@@ -34,7 +34,6 @@ const formSchema = z.object({
 });
 
 const EditCampaign = (campaign) => {
-  console.log(campaign);
   const router = useRouter();
   const content = campaign.campaign.content;
   const form = useForm({
@@ -55,20 +54,20 @@ const EditCampaign = (campaign) => {
     try {
       setIsLoading(true);
       let imageUrl;
+      let url;
       if (!file) {
         imageUrl = campaign.campaign.imageThumb;
-        console.log("gambar tidak berubah tidak di eksekusi update thubnail");
+        url = imageUrl;
       } else {
         imageUrl = await updateThumbnail(file);
-        console.log("update thumbnail ke supabase");
+        url = imageUrl.data.publicUrl;
       }
       const link = campaign.campaign.url;
 
-      let url = imageUrl;
-      await updatePost(url, values, imageUrl, link);
+      await editCampaignAction(url, values, link);
 
       toast({ title: "Success", description: "Campaign berhasil diedit!" });
-      // router.push("/campaign");
+      router.push("/admin/campaign");
     } catch (error) {
       toast({ title: "Error", description: error.message });
       console.error(error);

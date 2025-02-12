@@ -18,7 +18,7 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { uploadThumbnail } from "@/services/uploadService";
-import { createPost } from "@/services/postService";
+import { createCampaignAction } from "@/app/actions/Campaignaction";
 import Tiptap from "./text-editor/tiptap";
 
 const formSchema = z.object({
@@ -27,7 +27,7 @@ const formSchema = z.object({
     .min(2, {
       message: "judul harus lebih dari 2 karakter",
     })
-    .max(50, {
+    .max(20, {
       message: "judul terlalu panjang",
     }),
   url: z.string().regex(/^[a-z]+$/, {
@@ -63,13 +63,16 @@ const CreateCampaign = () => {
 
       const url = imageUrl.data.publicUrl;
 
-      await createPost(values, url);
+      const createCampaign = await createCampaignAction(values, url);
+
+      if (!createCampaign?.success) {
+        throw new Error(createCampaign.message);
+      }
 
       toast({ title: "Success", description: "Campaign berhasil dibuat!" });
-      // router.push("/campaign");
+      router.push("/admin/campaign");
     } catch (error) {
       toast({ title: "Error", description: error.message });
-      console.error(error.message);
     } finally {
       setIsLoading(false);
     }
