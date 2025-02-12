@@ -26,7 +26,10 @@ export async function createCampaignAction(values, url) {
 
 export async function editCampaignAction(url, values, link) {
   try {
+    console.log("🚀 Data sebelum dikirim ke backend:", { url, values, link });
+
     const response = await updateCampaign(url, values, link);
+    console.log("✅ Response dari backend:", response);
     return { success: true, data: response }; // Return hasil jika berhasil
   } catch (err) {
     console.error("error di action " + err.message);

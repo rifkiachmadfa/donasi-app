@@ -22,6 +22,8 @@ export async function createCampaign(values, imageUrl) {
         url: values.url,
         imageThumb: imageUrl,
         slug: generate,
+        target: values.target,
+        durasi: values.durasi,
       },
     });
     if (!newCampaign) {

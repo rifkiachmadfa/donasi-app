@@ -31,18 +31,25 @@ const formSchema = z.object({
       message: "judul terlalu panjang",
     }),
   content: z.string(),
+  target: z
+    .string()
+    .regex(/^\d+$/, "Target harus berupa angka")
+    .transform((val) => BigInt(val)), // Konversi ke BigInt
 });
 
 const EditCampaign = (campaign) => {
   const router = useRouter();
   const content = campaign.campaign.content;
+  const target = campaign.campaign.target;
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: campaign.campaign.title,
       content: content,
+      target: target,
     },
   });
+
   const { toast } = useToast();
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,8 +70,11 @@ const EditCampaign = (campaign) => {
         url = imageUrl.data.publicUrl;
       }
       const link = campaign.campaign.url;
-
-      await editCampaignAction(url, values, link);
+      const formattedValues = {
+        ...values,
+        target: BigInt(values.target), // Konversi sebelum dikirim
+      };
+      await editCampaignAction(url, formattedValues, link);
 
       toast({ title: "Success", description: "Campaign berhasil diedit!" });
       router.push("/admin/campaign");
@@ -94,6 +104,33 @@ const EditCampaign = (campaign) => {
                     <Input
                       placeholder="Program Makan Siang Gratis..."
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="target"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Target Donasi</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder=""
+                      {...field}
+                      type="text"
+                      value={
+                        field.value
+                          ? Number(field.value).toLocaleString("id-ID")
+                          : ""
+                      }
+                      onChange={(e) => {
+                        const rawValue = e.target.value.replace(/\D/g, ""); // Hanya angka
+                        field.onChange(rawValue); // Simpan tanpa format
+                      }}
+                      className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     />
                   </FormControl>
                   <FormMessage />

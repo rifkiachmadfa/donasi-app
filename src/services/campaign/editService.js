@@ -1,6 +1,10 @@
 import { db } from "@/lib/db";
 
 export async function updateCampaign(urls, values, link) {
+  console.log("📌 Received values:", values);
+  console.log("📌 Received target type:", typeof values.target);
+  console.log("📌 Received link:", link);
+  console.log("📌 Received urls:", urls);
   try {
     if (!urls || !values || !values.title || !values.content) {
       throw new Error("Invalid data: Missing required fields");
@@ -24,6 +28,7 @@ export async function updateCampaign(urls, values, link) {
         title: values.title,
         content: values.content,
         imageThumb: urls,
+        target: values.target,
       },
     });
     if (!response) {

@@ -41,14 +41,16 @@ model Profile {
 
 model Post {
   id        String   @default(uuid())
+  url       String @unique @id
   title     String
   content   String
-  published Boolean? @default(false)
   imageThumb  String?
+  target  BigInt
+  durasi Int?
+  slug      String 
+  published Boolean? @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  slug      String 
-  url       String @unique @id
   // author    User     @relation(fields: [authorId], references: [id])
   // authorId  String
 }

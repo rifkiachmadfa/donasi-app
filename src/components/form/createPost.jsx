@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,10 +15,11 @@ import ThumbnailUpload from "./thumbnailUpload";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { uploadThumbnail } from "@/services/uploadService";
 import { createCampaignAction } from "@/app/actions/Campaignaction";
 import Tiptap from "./text-editor/tiptap";
+import DurasiCampaignSelect from "./durasiCampaign";
 
 const formSchema = z.object({
   title: z
@@ -27,23 +27,26 @@ const formSchema = z.object({
     .min(2, {
       message: "judul harus lebih dari 2 karakter",
     })
-    .max(20, {
+    .max(80, {
       message: "judul terlalu panjang",
     }),
   url: z.string().regex(/^[a-z]+$/, {
     message: "URL hanya boleh berisi huruf dan angka",
   }),
   content: z.string().min(1, { message: "konten tidak boleh kosong" }),
+  target: z.string(),
+  durasi: z.number(),
 });
-
 const CreateCampaign = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       url: "",
       content: "",
+      target: 0,
+      durasi: 0,
     },
   });
   const { toast } = useToast();
@@ -62,15 +65,19 @@ const CreateCampaign = () => {
       const imageUrl = await uploadThumbnail(file);
 
       const url = imageUrl.data.publicUrl;
-
-      const createCampaign = await createCampaignAction(values, url);
+      const formattedValues = {
+        ...values,
+        target: BigInt(values.target),
+      };
+      console.log("vvalue durasi", values.durasi);
+      const createCampaign = await createCampaignAction(formattedValues, url);
 
       if (!createCampaign?.success) {
         throw new Error(createCampaign.message);
       }
 
       toast({ title: "Success", description: "Campaign berhasil dibuat!" });
-      router.push("/admin/campaign");
+      // router.push("/admin/campaign");
     } catch (error) {
       toast({ title: "Error", description: error.message });
     } finally {
@@ -95,6 +102,54 @@ const CreateCampaign = () => {
                     <Input
                       placeholder="Program Makan Siang Gratis..."
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="target"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Target Donasi</FormLabel>
+                  <FormControl>
+                    <div className="flex gap-2 items-center">
+                      <div>
+                        <span>Rp </span>
+                      </div>
+                      <Input
+                        placeholder=""
+                        {...field}
+                        type="text"
+                        value={
+                          field.value
+                            ? Number(field.value).toLocaleString("id-ID")
+                            : ""
+                        }
+                        onChange={(e) => {
+                          const rawValue = e.target.value.replace(/\D/g, ""); // Hanya angka
+                          field.onChange(rawValue); // Simpan tanpa format
+                        }}
+                        className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="durasi"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Durasi Campaign</FormLabel>
+                  <FormControl>
+                    <DurasiCampaignSelect
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />
