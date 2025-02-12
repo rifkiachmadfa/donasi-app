@@ -20,13 +20,22 @@ function Navbar() {
     <div className="flex justify-center h-14 items-center shadow-lg rounded-md gap-4 px-4">
       <div className="w-full flex ">
         {arrow ? (
-          <ArrowLeft
-            size="20"
-            onClick={router.back}
-            className="cursor-pointer content-end"
-          />
+          <>
+            <div className="flex gap-2">
+              <Link href="/">
+                <Image src="/sf-logo.png" height={50} width={50} alt="logo" />
+              </Link>
+              <ArrowLeft
+                size="20"
+                onClick={router.back}
+                className="cursor-pointer content-end"
+              />
+            </div>
+          </>
         ) : (
-          <Image src="/sf-logo.png" height={80} width={80} alt="logo" />
+          <Link href="/">
+            <Image src="/sf-logo.png" height={80} width={80} alt="logo" />
+          </Link>
         )}
       </div>
 

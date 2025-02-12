@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
           <div className="bg-white h-full w-full max-w-sm shadow-2xl">
             {" "}
             <Navbar />
-            <div className="mb-20">{children}</div>
+            <div className="mb-20 min-h-screen">{children}</div>
             <NavMenu />
           </div>
         </div>
