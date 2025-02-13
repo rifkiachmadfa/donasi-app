@@ -17,7 +17,7 @@ function Navbar() {
   }, [path]);
 
   return (
-    <div className="flex justify-center h-14 items-center shadow-lg rounded-md gap-4 px-4">
+    <div className="flex justify-center h-14 items-center shadow-lg rounded-md gap-4 px-4 bg-transparent">
       <div className="w-full flex ">
         {arrow ? (
           <>

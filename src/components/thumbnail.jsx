@@ -35,13 +35,13 @@ function Thumbnail() {
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
         {src.map((src) => (
-          <CarouselItem key={src} className="overflow-hidden rounded-b-3xl">
+          <CarouselItem key={src} className="">
             <AspectRatio ratio={16 / 9}>
               <Image
                 src={src}
                 width={720}
                 height={100}
-                className="w-full h-full object-cover rounded-b-3xl"
+                className="w-full h-full object-cover"
                 alt="thumbnail alt"
               />
             </AspectRatio>

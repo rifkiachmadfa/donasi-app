@@ -12,15 +12,15 @@ async function CarouselUrgent() {
   const campaigns = await getAllCampaign();
   return (
     <>
-      <div className="p-2 px-5">
-        <h1 className="text-sm">Butuh Pendanaan Cepat</h1>
+      <div className="p-2 px-5 pt-16 bg-white w-full h-full">
+        <h1 className="text-sm text-gray-700">Butuh Pendanaan Cepat</h1>
       </div>
 
       <Carousel
         opts={{
           align: "center",
         }}
-        className="w-full max-w-5xl"
+        className="w-full max-w-5xl bg-white pb-5"
       >
         <CarouselContent className="gap-12">
           {campaigns.map((campaign) => (

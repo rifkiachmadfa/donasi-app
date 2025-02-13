@@ -37,7 +37,7 @@ function NavMenu() {
           <MenubarMenu key={item.id}>
             <Link href={item.link} className="w-full flex justify-center">
               <MenubarTrigger
-                className={`flex flex-col items-center h-full text-black  transition-all   hover:bg-gray-100 ${
+                className={`flex flex-col items-center h-full text-black  transition-all    hover:bg-gray-100 ${
                   pathname === item.link ? "text-blue-500  font-semibold" : ""
                 }`}
               >

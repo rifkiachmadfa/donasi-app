@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
-import { renderContent } from "@/utils/renderContent";
+
 import { getAllCampaign } from "@/lib/repo/campaign";
+import SpecialCampaign from "@/components/specialCampaign";
 
 export default async function campaignPage() {
   const data = await getAllCampaign();
@@ -13,14 +14,10 @@ export default async function campaignPage() {
     <>
       <div>
         <h1>Campaign Page</h1>
-        <ul>
-          {data.map((post) => (
-            <li key={post.id}>
-              <h2>{post.title}</h2>
-              <div>{renderContent(post.content.content)}</div>
-            </li>
-          ))}
-        </ul>
+        <SpecialCampaign
+          link="/"
+          image="https://media.licdn.com/dms/image/v2/C561BAQEJPaeWrnN6TQ/company-background_10000/company-background_10000/0/1628420762877/sinergifoundation_cover?e=2147483647&v=beta&t=Gnaq_PcuDsczCUi7rmiUwYtfOpbSyHsdWXp_eYWC_UI"
+        />
       </div>
     </>
   );
