@@ -9,6 +9,8 @@ import {
 import { Progress } from "./ui/progress";
 import Image from "next/image";
 import { AspectRatio } from "./ui/aspect-ratio";
+import { formatCurrency } from "@/lib/formatCurrency";
+
 const CardCampaign = ({
   title,
   progress,
@@ -17,6 +19,9 @@ const CardCampaign = ({
   durasi,
   thumbnail,
 }) => {
+  const targeDonasi = formatCurrency(target);
+  const danaTerkumpul = formatCurrency(terkumpul);
+
   return (
     <Card className="h-60 w-60">
       <AspectRatio ratio={16 / 9}>
@@ -33,8 +38,8 @@ const CardCampaign = ({
         <CardTitle className="mb-4">{title}</CardTitle>
         <Progress value={progress} />
         <div className="flex justify-between">
-          <p className="text-[10px]">Terkumpul Rp {terkumpul}</p>
-          <p className="text-[10px]">Target Rp {target}</p>
+          <p className="text-[10px]">Terkumpul Rp {danaTerkumpul}</p>
+          <p className="text-[10px]">Target Rp {targeDonasi}</p>
         </div>
         <p className="text-[10px]">{durasi} hari lagi</p>
       </CardContent>
