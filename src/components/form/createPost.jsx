@@ -20,7 +20,7 @@ import { uploadThumbnail } from "@/services/uploadService";
 import { createCampaignAction } from "@/app/actions/Campaignaction";
 import Tiptap from "./text-editor/tiptap";
 import DurasiCampaignSelect from "./durasiCampaign";
-
+import { Checkbox } from "@/components/ui/checkbox";
 const formSchema = z.object({
   title: z
     .string()
@@ -36,9 +36,15 @@ const formSchema = z.object({
   content: z.string().min(1, { message: "konten tidak boleh kosong" }),
   target: z.string(),
   durasi: z.number(),
+  category: z
+    .array(z.number())
+    .nonempty({ message: "Pilih minimal 1 kategori" }),
 });
-const CreateCampaign = () => {
-  // const router = useRouter();
+
+const CreateCampaign = ({ category }) => {
+  const categories = category;
+  console.log("Categories prop:", categories);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,6 +53,7 @@ const CreateCampaign = () => {
       content: "",
       target: 0,
       durasi: 0,
+      category: [],
     },
   });
   const { toast } = useToast();
@@ -56,6 +63,7 @@ const CreateCampaign = () => {
   const handleFileChange = (file) => {
     setFile(file);
   };
+  console.log("Category field value:", form.watch("category"));
   const onSubmit = async (values) => {
     try {
       if (!file) throw new Error("Silakan pilih file terlebih dahulu");
@@ -69,7 +77,7 @@ const CreateCampaign = () => {
         ...values,
         target: BigInt(values.target),
       };
-      console.log("vvalue durasi", values.durasi);
+      console.log("kategori terpilih", values.category);
       const createCampaign = await createCampaignAction(formattedValues, url);
 
       if (!createCampaign?.success) {
@@ -188,6 +196,46 @@ const CreateCampaign = () => {
                       />
                     </FormControl>
 
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kategori</FormLabel>
+                    <div className="grid grid-cols-2 gap-4">
+                      {categories.map((category) => (
+                        <div
+                          key={category.id}
+                          className="flex items-center space-x-2"
+                        >
+                          <Checkbox
+                            checked={
+                              Array.isArray(field.value) &&
+                              field.value.includes(category.id)
+                            }
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                field.onChange([...field.value, category.id]); // Tambahkan kategori
+                              } else {
+                                field.onChange(
+                                  field.value.filter((c) => c !== category.id)
+                                ); // Hapus kategori
+                              }
+                              console.log(
+                                "Updated Category field value:",
+                                field.value
+                              ); // Debugging
+                            }}
+                          />
+
+                          <FormLabel>{category.name}</FormLabel>
+                        </div>
+                      ))}
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -39,14 +39,15 @@ model Profile {
   userId      String   @unique
 }
 
-model Post {
-  id        String   @default(uuid())
-  url       String @unique @id
+model Campaign {
+  id        String  @id @default(uuid())
+  url       String @unique 
   title     String
   content   String
   imageThumb  String?
   target  BigInt
   durasi Int?
+  categories CampaignCategory[]
   slug      String 
   published Boolean? @default(false)
   createdAt DateTime @default(now())
@@ -54,3 +55,20 @@ model Post {
   // author    User     @relation(fields: [authorId], references: [id])
   // authorId  String
 }
+
+model Category {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  campaigns  CampaignCategory[]
+}
+
+model CampaignCategory {
+  campaign    Campaign  @relation(fields: [campaignId], references: [id])
+  campaignId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+
+  @@id([campaignId, categoryId]) // Composite Primary Key
+}
+
+

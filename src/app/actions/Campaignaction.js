@@ -19,7 +19,7 @@ export async function createCampaignAction(values, url) {
     const response = await createCampaign(values, url);
     return { success: true, data: response }; // Return hasil jika berhasil
   } catch (err) {
-    console.error("error di action " + err.message);
+    console.error(err.message);
     return { success: false, message: err.message };
   }
 }

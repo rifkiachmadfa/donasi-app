@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
-
-import { getAllCampaign } from "@/lib/repo/campaign";
-import SpecialCampaign from "@/components/specialCampaign";
-
+import { getAllCampaign, getSpecificCampaign } from "@/lib/repo/campaign";
+import ListCampaignHorizontal from "@/components/listCampaignHorizontal";
+import FilterSelect from "@/components/FilterSelect";
 export default async function campaignPage() {
   const data = await getAllCampaign();
 
@@ -12,12 +11,12 @@ export default async function campaignPage() {
 
   return (
     <>
-      <div>
-        <h1>Campaign Page</h1>
-        <SpecialCampaign
-          link="/"
-          image="https://media.licdn.com/dms/image/v2/C561BAQEJPaeWrnN6TQ/company-background_10000/company-background_10000/0/1628420762877/sinergifoundation_cover?e=2147483647&v=beta&t=Gnaq_PcuDsczCUi7rmiUwYtfOpbSyHsdWXp_eYWC_UI"
-        />
+      <div className="">
+        <div className="flex items-center gap-4 justify-between p-2">
+          <span className="text-xs">Cari Berdasarkan Kategori</span>
+          <FilterSelect />
+        </div>
+        <ListCampaignHorizontal data={data} />
       </div>
     </>
   );
