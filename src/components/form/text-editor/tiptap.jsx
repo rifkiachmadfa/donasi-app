@@ -144,7 +144,7 @@ export default function TextEditor({ onChangeForm, contentForm }) {
         <MenuBar editor={editor} />
         <EditorContent
           editor={editor}
-          className="focus:outline-none focus:ring-0 focus:border-none p-5 w-[460px]"
+          className="focus:outline-none focus:ring-0 focus:border-none p-5 w-[360px]"
         />
       </ScrollArea>
     </div>

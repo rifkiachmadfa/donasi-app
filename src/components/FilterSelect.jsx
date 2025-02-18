@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Select,
@@ -7,17 +8,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const FilterSelect = () => {
+const FilterSelect = ({ category, setIsCategory }) => {
+  const categories = category;
+  console.log(categories);
+
   return (
     <>
-      <Select>
+      <Select onValueChange={(value) => setIsCategory(value)}>
         <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Theme" />
+          <SelectValue placeholder="Kategori" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="light">Light</SelectItem>
-          <SelectItem value="dark">Dark</SelectItem>
-          <SelectItem value="system">System</SelectItem>
+          {categories.map((category) => (
+            <SelectItem value={category.name} key={category.id}>
+              {category.name}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </>

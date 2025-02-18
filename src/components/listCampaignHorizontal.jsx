@@ -1,13 +1,13 @@
 import React from "react";
 import CardCampaignHorizontal from "./cardCampaignHorizontal";
 
-const ListCampaignHorizontal = async ({ data }) => {
+const ListCampaignHorizontal = ({ data, isCategory }) => {
   return (
     <>
       <div className="flex flex-col gap-2 mx-2">
         {data.map((campaign) => (
           <CardCampaignHorizontal
-            href={`/campaign`}
+            href={campaign.url}
             key={campaign.id}
             title={campaign.title}
             progress={10}

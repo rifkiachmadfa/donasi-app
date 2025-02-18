@@ -32,6 +32,7 @@ async function CarouselUrgent() {
                 terkumpul={100000}
                 durasi={campaign.durasi}
                 thumbnail={campaign.imageThumb}
+                href={campaign.url}
               />
             </CarouselItem>
           ))}

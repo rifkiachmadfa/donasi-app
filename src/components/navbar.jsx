@@ -6,11 +6,41 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, Search } from "lucide-react";
 import Image from "next/image";
+import useSearchStore from "@/lib/store";
 
 function Navbar() {
   const [arrow, setArrow] = useState(false);
   const path = usePathname();
   const router = useRouter();
+
+  const { searchQuery, setSearchQuery, setResults } = useSearchStore();
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    e.target.value;
+  };
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(async () => {
+      if (searchQuery.trim()) {
+        const response = await fetch(
+          `/api/campaign/search?query=${encodeURIComponent(searchQuery)}`
+        );
+
+        const data = await response.json();
+        console.log(data.json.results);
+        const parsedResults = data.json.results.map((item) => ({
+          ...item,
+          target: BigInt(item.target),
+        }));
+
+        console.log(parsedResults);
+        setResults(parsedResults);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery, setResults]);
 
   useEffect(() => {
     setArrow(path !== "/");
@@ -45,6 +75,8 @@ function Navbar() {
           <Input
             className="pr-10 outline-none w-full"
             placeholder="Cari Program"
+            value={searchQuery}
+            onChange={handleSearch}
           />
           <Search
             size="18"

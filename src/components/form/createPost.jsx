@@ -15,7 +15,7 @@ import ThumbnailUpload from "./thumbnailUpload";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { uploadThumbnail } from "@/services/uploadService";
 import { createCampaignAction } from "@/app/actions/Campaignaction";
 import Tiptap from "./text-editor/tiptap";
@@ -43,7 +43,7 @@ const formSchema = z.object({
 
 const CreateCampaign = ({ category }) => {
   const categories = category;
-  console.log("Categories prop:", categories);
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -85,7 +85,7 @@ const CreateCampaign = ({ category }) => {
       }
 
       toast({ title: "Success", description: "Campaign berhasil dibuat!" });
-      // router.push("/admin/campaign");
+      router.push("/admin/campaign");
     } catch (error) {
       toast({ title: "Error", description: error.message });
     } finally {
@@ -242,7 +242,11 @@ const CreateCampaign = ({ category }) => {
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button disabled={isLoading} variant="outline">
+              <Button
+                disabled={isLoading}
+                onClick={() => router.back()}
+                variant="outline"
+              >
                 cancel
               </Button>
               <Button type="submit" disabled={isLoading}>

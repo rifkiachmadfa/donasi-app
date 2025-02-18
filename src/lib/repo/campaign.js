@@ -6,7 +6,6 @@ export const getAllCampaign = async () => {
 };
 
 export const getDetailCampaign = async (url) => {
-  console.log(url);
   const detailCampaign = await db.campaign.findUnique({
     where: {
       url: url,
@@ -16,12 +15,20 @@ export const getDetailCampaign = async (url) => {
 };
 
 export const getSpecificCampaign = async (categoryProps) => {
-  const spesificCampaign = await db.findUnique({
+  const spesificCampaign = await db.campaign.findUnique({
     where: {
       category: categoryProps,
     },
   });
   return spesificCampaign;
+};
+
+export const searchManyCampaign = async (titleProps) => {
+  const searchCampaign = await db.campaign.findMany({
+    where: {
+      title: titleProps,
+    },
+  });
 };
 
 export const getCategory = async () => {
