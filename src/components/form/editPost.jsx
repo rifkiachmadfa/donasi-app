@@ -1,8 +1,8 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
+import { bigint, string, z } from "zod";
+import DurasiCampaignSelect from "./durasiCampaign";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import { uploadThumbnail, updateThumbnail } from "@/services/uploadService";
 import { editCampaignAction } from "@/app/actions/Campaignaction";
 import Tiptap from "./text-editor/tiptap";
-
+import { Checkbox } from "../ui/checkbox";
 const formSchema = z.object({
   title: z
     .string()
@@ -31,22 +31,24 @@ const formSchema = z.object({
       message: "judul terlalu panjang",
     }),
   content: z.string(),
-  target: z
-    .string()
-    .regex(/^\d+$/, "Target harus berupa angka")
-    .transform((val) => BigInt(val)), // Konversi ke BigInt
+  target: z.string(),
+  durasi: z.number(),
 });
 
-const EditCampaign = (campaign) => {
+const EditCampaign = ({ campaign, category }) => {
+  const categories = category;
   const router = useRouter();
-  const content = campaign.campaign.content;
-  const target = campaign.campaign.target;
+  const content = campaign.content;
+  const target = campaign.target;
+
+  console.log(campaign.categories);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: campaign.campaign.title,
+      title: campaign.title,
       content: content,
-      target: target,
+      target: String(target),
+      durasi: campaign.durasi,
     },
   });
 
@@ -63,17 +65,18 @@ const EditCampaign = (campaign) => {
       let imageUrl;
       let url;
       if (!file) {
-        imageUrl = campaign.campaign.imageThumb;
+        imageUrl = campaign.imageThumb;
         url = imageUrl;
       } else {
         imageUrl = await updateThumbnail(file);
         url = imageUrl.data.publicUrl;
       }
-      const link = campaign.campaign.url;
+      const link = campaign.url;
       const formattedValues = {
         ...values,
         target: BigInt(values.target), // Konversi sebelum dikirim
       };
+
       await editCampaignAction(url, formattedValues, link);
 
       toast({ title: "Success", description: "Campaign berhasil diedit!" });
@@ -92,7 +95,7 @@ const EditCampaign = (campaign) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <ThumbnailUpload
               onChange={(fileName) => handleFileChange(fileName)}
-              previewUrls={campaign.campaign.imageThumb}
+              previewUrls={campaign.imageThumb}
             />
             <FormField
               control={form.control}
@@ -131,6 +134,22 @@ const EditCampaign = (campaign) => {
                         field.onChange(rawValue); // Simpan tanpa format
                       }}
                       className="appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="durasi"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Durasi Campaign</FormLabel>
+                  <FormControl>
+                    <DurasiCampaignSelect
+                      value={field.value}
+                      onChange={field.onChange}
                     />
                   </FormControl>
                   <FormMessage />

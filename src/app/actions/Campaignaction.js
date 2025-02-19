@@ -5,12 +5,22 @@ import { revalidatePath } from "next/cache";
 import { createCampaign } from "@/services/campaign/postService";
 import { updateCampaign } from "@/services/campaign/editService";
 
-export async function deleteCampaignAction(url) {
+export async function deleteCampaignAction(id) {
+  if (!id || typeof id !== "string") {
+    console.error("ID tidak valid atau undefined:", id);
+    throw new Error("ID tidak valid.");
+  }
+
   try {
-    await deleteCampaign(url);
+    const response = await deleteCampaign(id);
+    console.log(response.message);
+
     revalidatePath("/admin/campaign");
+
+    return response;
   } catch (error) {
-    console.log("error di action " + error);
+    console.error("Error di action:", error);
+    return { success: false, message: error.message };
   }
 }
 
@@ -29,8 +39,7 @@ export async function editCampaignAction(url, values, link) {
     console.log("🚀 Data sebelum dikirim ke backend:", { url, values, link });
 
     const response = await updateCampaign(url, values, link);
-    console.log("✅ Response dari backend:", response);
-    return { success: true, data: response }; // Return hasil jika berhasil
+    return { success: true, data: response };
   } catch (err) {
     console.error("error di action " + err.message);
     return { success: false, message: err.message };

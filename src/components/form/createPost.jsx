@@ -204,7 +204,7 @@ const CreateCampaign = ({ category }) => {
                 control={form.control}
                 name="category"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="mt-6">
                     <FormLabel>Kategori</FormLabel>
                     <div className="grid grid-cols-2 gap-4">
                       {categories.map((category) => (

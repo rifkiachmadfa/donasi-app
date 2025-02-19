@@ -10,6 +10,7 @@ export const getDetailCampaign = async (url) => {
     where: {
       url: url,
     },
+    include: { categories: true },
   });
   return detailCampaign;
 };

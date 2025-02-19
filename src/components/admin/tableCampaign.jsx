@@ -49,7 +49,7 @@ const TableCampaign = async () => {
               <Switch />
             </TableCell>
             <TableCell>
-              <ActionTable url={campaign.url} />
+              <ActionTable id={campaign.id} />
             </TableCell>
           </TableRow>
         ))}

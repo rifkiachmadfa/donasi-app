@@ -5,13 +5,13 @@ import { redirect } from "next/navigation";
 import { Button } from "../ui/button";
 import { deleteCampaignAction } from "@/app/actions/Campaignaction";
 
-const ActionTable = ({ url }) => {
+const ActionTable = ({ id }) => {
   const handleEdit = () => {
     redirect(`/admin/campaign/${url}/edit`);
   };
 
   const handleClick = async () => {
-    await deleteCampaignAction(url);
+    await deleteCampaignAction(id);
   };
   return (
     <div className="flex gap-2">

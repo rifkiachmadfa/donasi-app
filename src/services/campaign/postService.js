@@ -22,9 +22,9 @@ export async function createCampaign(values, imageUrl) {
         content: values.content,
         url: values.url,
         imageThumb: imageUrl,
-        slug: generate,
         target: values.target,
         durasi: values.durasi,
+        authorId: "cm7c7ku8s0000uhew0j4810so",
       },
     });
     if (!newCampaign) {
