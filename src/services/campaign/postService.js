@@ -1,11 +1,8 @@
-import { generateSlug } from "@/lib/generateSlug";
 import { db } from "@/lib/db";
 
 export async function createCampaign(values, imageUrl) {
+  console.log("data di service", values, imageUrl);
   try {
-    console.log("DB instance: ", db);
-    const generate = generateSlug(values.title);
-    console.log(values);
     const existingCampaign = await db.campaign.findUnique({
       where: {
         url: values.url,
@@ -22,11 +19,12 @@ export async function createCampaign(values, imageUrl) {
         content: values.content,
         url: values.url,
         imageThumb: imageUrl,
-        target: values.target,
-        durasi: values.durasi,
+        target: Number(values.target),
+        durasi: Number(values.durasi),
         authorId: "cm7c7ku8s0000uhew0j4810so",
       },
     });
+    console.log("newCampaign", newCampaign);
     if (!newCampaign) {
       throw new Error(`Gagal membuat campaign`);
     }

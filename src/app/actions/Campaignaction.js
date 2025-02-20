@@ -24,14 +24,18 @@ export async function deleteCampaignAction(id) {
   }
 }
 
+// export async function createCampaignAction(values, url) {
+//   try {
+//     const response = await createCampaign(values, url);
+//     return { success: true, data: response };
+//   } catch (err) {
+//     console.error(err.message);
+//     return { success: false, message: err.message };
+//   }
+// }
+
 export async function createCampaignAction(values, url) {
-  try {
-    const response = await createCampaign(values, url);
-    return { success: true, data: response }; // Return hasil jika berhasil
-  } catch (err) {
-    console.error(err.message);
-    return { success: false, message: err.message };
-  }
+  response = await fetch("/api/campaign/create");
 }
 
 export async function editCampaignAction(url, values, link) {

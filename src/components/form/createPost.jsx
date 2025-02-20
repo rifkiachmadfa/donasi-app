@@ -16,11 +16,10 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { uploadThumbnail } from "@/services/uploadService";
-import { createCampaignAction } from "@/app/actions/Campaignaction";
 import Tiptap from "./text-editor/tiptap";
 import DurasiCampaignSelect from "./durasiCampaign";
 import { Checkbox } from "@/components/ui/checkbox";
+
 const formSchema = z.object({
   title: z
     .string()
@@ -59,47 +58,44 @@ const CreateCampaign = ({ category }) => {
   const { toast } = useToast();
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleFileChange = (file) => {
-    setFile(file);
-  };
-  console.log("Category field value:", form.watch("category"));
   const onSubmit = async (values) => {
     try {
       if (!file) throw new Error("Silakan pilih file terlebih dahulu");
 
+      const formData = new FormData(); // Huruf "F" harus kapital
+      formData.append("file", file);
+      formData.append("title", values.title);
+      formData.append("url", values.url);
+      formData.append("content", values.content);
+      formData.append("target", values.target);
+      formData.append("durasi", values.durasi);
+      formData.append("category", JSON.stringify(values.category)); // Jika array, harus di-stringify
+
       setIsLoading(true);
 
-      const imageUrl = await uploadThumbnail(file);
+      const response = await fetch("/api/campaign/create", {
+        method: "POST",
+        body: formData, // Tidak perlu JSON.stringify
+      });
 
-      const url = imageUrl.data.publicUrl;
-      const formattedValues = {
-        ...values,
-        target: BigInt(values.target),
-      };
-      console.log("kategori terpilih", values.category);
-      const createCampaign = await createCampaignAction(formattedValues, url);
-
-      if (!createCampaign?.success) {
-        throw new Error(createCampaign.message);
-      }
+      const result = await response.json();
+      if (!result.success) throw new Error(result.message);
 
       toast({ title: "Success", description: "Campaign berhasil dibuat!" });
       router.push("/admin/campaign");
     } catch (error) {
-      toast({ title: "Error", description: error.message });
+      toast({ title: "Error", description: "internal Server Error" });
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <>
       <div className="p-4 h-full min-h-screen flex flex-col ">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <ThumbnailUpload
-              onChange={(fileName) => handleFileChange(fileName)}
-            />
+            <ThumbnailUpload onChange={setFile} />
             <FormField
               control={form.control}
               name="title"

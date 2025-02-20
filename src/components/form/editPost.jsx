@@ -17,10 +17,8 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { uploadThumbnail, updateThumbnail } from "@/services/uploadService";
-import { editCampaignAction } from "@/app/actions/Campaignaction";
 import Tiptap from "./text-editor/tiptap";
-import { Checkbox } from "../ui/checkbox";
+
 const formSchema = z.object({
   title: z
     .string()
@@ -62,27 +60,28 @@ const EditCampaign = ({ campaign, category }) => {
   const onSubmit = async (values) => {
     try {
       setIsLoading(true);
-      let imageUrl;
-      let url;
-      if (!file) {
-        imageUrl = campaign.imageThumb;
-        url = imageUrl;
-      } else {
-        imageUrl = await updateThumbnail(file);
-        url = imageUrl.data.publicUrl;
-      }
-      const link = campaign.url;
-      const formattedValues = {
-        ...values,
-        target: BigInt(values.target), // Konversi sebelum dikirim
-      };
 
-      await editCampaignAction(url, formattedValues, link);
+      const formData = new FormData(); // Huruf "F" harus kapital
+      formData.append("file", file);
+      formData.append("title", values.title);
+      formData.append("url", values.url);
+      formData.append("content", values.content);
+      formData.append("target", values.target);
+      formData.append("durasi", values.durasi);
+      formData.append("category", JSON.stringify(values.category)); // Jika array, harus di-stringify
+
+      const response = await fetch(`/api/campaign/${campaign.url}/edit`, {
+        method: "PATCH",
+        body: formData, // Tidak perlu JSON.stringify
+      });
+
+      const result = await response.json();
+      if (!result.success) throw new Error(result.message);
 
       toast({ title: "Success", description: "Campaign berhasil diedit!" });
       router.push("/admin/campaign");
     } catch (error) {
-      toast({ title: "Error", description: error.message });
+      toast({ title: "Error", description: "internal server error" });
       console.error(error);
     } finally {
       setIsLoading(false);

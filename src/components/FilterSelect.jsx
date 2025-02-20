@@ -7,26 +7,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useCategory } from "../app/context/categoryContext";
 
-const FilterSelect = ({ category, setIsCategory }) => {
-  const categories = category;
-  console.log(categories);
+const FilterSelect = ({ category }) => {
+  const { selectedCategory, setSelectedCategory } = useCategory();
 
   return (
-    <>
-      <Select onValueChange={(value) => setIsCategory(value)}>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Kategori" />
-        </SelectTrigger>
-        <SelectContent>
-          {categories.map((category) => (
-            <SelectItem value={category.name} key={category.id}>
-              {category.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </>
+    <Select
+      value={selectedCategory}
+      onValueChange={(value) => setSelectedCategory(value)}
+    >
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Kategori" />
+      </SelectTrigger>
+      <SelectContent>
+        {category.map((cat) => (
+          <SelectItem value={cat.name} key={cat.id}>
+            {cat.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 };
 

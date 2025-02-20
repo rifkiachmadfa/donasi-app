@@ -55,7 +55,7 @@ model Campaign {
   title     String
   content   String
   imageThumb  String?
-  target  BigInt
+  target  Int
   durasi Int?
   categories CampaignCategory[]
   donors CampaignDonors[]

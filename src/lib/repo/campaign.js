@@ -15,7 +15,7 @@ export const getDetailCampaign = async (url) => {
   return detailCampaign;
 };
 
-export const getSpecificCampaign = async (categoryProps) => {
+export const getCampaignByCategory = async (categoryProps) => {
   const spesificCampaign = await db.campaign.findUnique({
     where: {
       category: categoryProps,

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { Button } from "../ui/button";
 import { deleteCampaignAction } from "@/app/actions/Campaignaction";
 
-const ActionTable = ({ id }) => {
+const ActionTable = ({ id, url }) => {
   const handleEdit = () => {
     redirect(`/admin/campaign/${url}/edit`);
   };
